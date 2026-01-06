@@ -3,105 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Уклонялка - Игра</title>
+    <title>🎮 Космическая Уклонялка</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #fff;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: 20px;
         }
         
         .container {
-            max-width: 800px;
-            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
         }
         
-        .header {
+        header {
             text-align: center;
             margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 2px solid #00b4d8;
         }
         
         h1 {
             color: #00b4d8;
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+            text-shadow: 0 0 10px rgba(0, 180, 216, 0.7);
         }
         
-        .game-container {
+        .game-area {
             display: flex;
             gap: 30px;
             margin-bottom: 30px;
         }
         
-        .game-area {
+        .game-section {
             flex: 2;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #00b4d8;
         }
         
-        .stats-area {
+        .stats-section {
             flex: 1;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
             padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #00b4d8;
+            border-radius: 15px;
+            border: 2px solid #ff6b6b;
         }
         
         canvas {
-            background: #0f3460;
+            background: #1a1a2e;
             border-radius: 10px;
             border: 3px solid #00b4d8;
-            box-shadow: 0 0 20px rgba(0, 180, 216, 0.3);
             display: block;
-            width: 100%;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
         }
         
         .controls {
             display: flex;
-            gap: 20px;
-            margin: 20px 0;
+            gap: 15px;
             justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
         
         button {
-            background: #00b4d8;
-            color: white;
+            padding: 12px 25px;
             border: none;
-            padding: 12px 30px;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: bold;
+            background: linear-gradient(45deg, #00b4d8, #0077b6);
+            color: white;
+            min-width: 120px;
         }
         
         button:hover {
-            background: #0096c7;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 180, 216, 0.4);
         }
         
         button:disabled {
-            background: #555;
+            background: #666;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
         
-        .score {
-            font-size: 24px;
+        .score-display {
+            font-size: 20px;
+            margin: 10px 0;
             color: #90e0ef;
-            margin-bottom: 10px;
         }
         
         .username-input {
@@ -109,59 +110,53 @@
         }
         
         input {
+            width: 100%;
             padding: 10px;
             border-radius: 5px;
             border: 2px solid #00b4d8;
             background: rgba(255, 255, 255, 0.1);
             color: white;
             font-size: 16px;
-            width: 100%;
         }
         
         .leaderboard {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
             padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border: 1px solid #00b4d8;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #06d6a0;
         }
         
-        .leaderboard h3 {
-            color: #90e0ef;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .leaderboard-table {
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
         
-        .leaderboard-table th {
-            background: rgba(0, 180, 216, 0.2);
+        th {
+            background: rgba(6, 214, 160, 0.3);
             padding: 10px;
             text-align: left;
         }
         
-        .leaderboard-table td {
+        td {
             padding: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .leaderboard-table tr:hover {
-            background: rgba(0, 180, 216, 0.1);
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
         
         .instructions {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border: 1px solid #00b4d8;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #ffd166;
         }
         
         .instructions h3 {
-            color: #90e0ef;
+            color: #ffd166;
             margin-bottom: 10px;
         }
         
@@ -170,72 +165,92 @@
         }
         
         .instructions li {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         
         .game-over {
             color: #ff6b6b;
             font-size: 24px;
             text-align: center;
-            margin-top: 20px;
+            margin: 20px 0;
+            padding: 10px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 10px;
             display: none;
         }
         
+        .keyboard-hint {
+            text-align: center;
+            color: #90e0ef;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
         @media (max-width: 768px) {
-            .game-container {
+            .game-area {
                 flex-direction: column;
-            }
-            
-            .controls {
-                flex-wrap: wrap;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <header>
             <h1>🚀 Космическая Уклонялка</h1>
-            <p>Уклоняйтесь от астероидов и набирайте очки!</p>
-        </div>
+            <p>Управляйте кораблем и уклоняйтесь от астероидов!</p>
+        </header>
         
-        <div class="game-container">
-            <div class="game-area">
+        <div class="game-area">
+            <div class="game-section">
                 <canvas id="gameCanvas" width="600" height="400"></canvas>
-                <div class="game-over" id="gameOver">ИГРА ОКОНЧЕНА!</div>
+                <div class="game-over" id="gameOver">💥 ИГРА ОКОНЧЕНА! 💥</div>
+                
+                <div class="score-display">
+                    🏆 Текущий счет: <span id="currentScore">0</span>
+                </div>
                 
                 <div class="controls">
                     <button onclick="moveLeft()">⬅️ ВЛЕВО</button>
-                    <button onclick="startGame()" id="startBtn">СТАРТ</button>
+                    <button onclick="startGame()" id="startBtn">🚀 СТАРТ</button>
                     <button onclick="moveRight()">➡️ ВПРАВО</button>
                 </div>
                 
+                <div class="keyboard-hint">
+                    Или используйте стрелки ← → на клавиатуре
+                </div>
+                
                 <div class="username-input">
-                    <input type="text" id="username" placeholder="Введите ваш никнейм" value="Игрок">
+                    <input type="text" id="username" placeholder="Введите ваш никнейм" value="Космонавт">
                 </div>
                 
                 <div class="controls">
                     <button onclick="saveScore()" id="saveBtn" disabled>💾 СОХРАНИТЬ РЕЗУЛЬТАТ</button>
-                    <button onclick="loadLeaderboard()">📊 ОБНОВИТЬ ТАБЛИЦУ</button>
+                    <button onclick="loadLeaderboard()">🔄 ОБНОВИТЬ ТАБЛИЦУ</button>
                 </div>
             </div>
             
-            <div class="stats-area">
-                <div class="score">🏆 Очки: <span id="currentScore">0</span></div>
-                <div class="score">⭐ Рекорд: <span id="bestScore">0</span></div>
-                <div class="score">🎯 Уровень: <span id="level">1</span></div>
+            <div class="stats-section">
+                <h3>📊 Ваша статистика</h3>
+                <div class="score-display">
+                    ⭐ Ваш рекорд: <span id="bestScore">0</span>
+                </div>
+                <div class="score-display">
+                    🎯 Уровень: <span id="level">1</span>
+                </div>
+                <div class="score-display">
+                    🎮 Всего игр: <span id="totalGames">0</span>
+                </div>
                 
-                <div id="userStats" style="margin-top: 20px;">
-                    <h4>Ваша статистика:</h4>
-                    <p>Всего игр: <span id="totalGames">0</span></p>
-                    <div id="recentGames"></div>
+                <div style="margin-top: 20px;">
+                    <h4>🎪 Последние игры:</h4>
+                    <div id="recentGames" style="margin-top: 10px;"></div>
                 </div>
             </div>
         </div>
         
         <div class="leaderboard">
             <h3>🏆 Таблица лидеров</h3>
-            <table class="leaderboard-table" id="leaderboard">
+            <table id="leaderboardTable">
                 <thead>
                     <tr>
                         <th>Место</th>
@@ -245,7 +260,7 @@
                     </tr>
                 </thead>
                 <tbody id="leaderboardBody">
-                    <!-- Данные загрузятся через JS -->
+                    <tr><td colspan="4" style="text-align: center;">Загрузка...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -253,12 +268,12 @@
         <div class="instructions">
             <h3>📖 Как играть:</h3>
             <ul>
-                <li>Управляйте кораблем с помощью кнопок ВЛЕВО/ВПРАВО</li>
+                <li>Управляйте кораблем кнопками <strong>ВЛЕВО/ВПРАВО</strong> или стрелками клавиатуры</li>
                 <li>Уклоняйтесь от падающих астероидов</li>
-                <li>Каждое успешное уклонение +10 очков</li>
-                <li>С каждым уровнем скорость увеличивается</li>
-                <li>При столкновении игра заканчивается</li>
-                <li>Сохраните результат чтобы попасть в таблицу лидеров!</li>
+                <li>За каждое успешное уклонение: <strong>+10 очков</strong></li>
+                <li>Каждые <strong>100 очков</strong> повышают уровень (скорость увеличивается)</li>
+                <li>При столкновении с астероидом игра заканчивается</li>
+                <li>Сохраните результат, чтобы попасть в таблицу лидеров!</li>
             </ul>
         </div>
     </div>
@@ -275,15 +290,15 @@
         let level = 1;
         let player = {
             x: canvas.width / 2 - 25,
-            y: canvas.height - 50,
+            y: canvas.height - 60,
             width: 50,
-            height: 30,
-            speed: 10
+            height: 40,
+            speed: 8
         };
         
         let obstacles = [];
         let obstacleSpeed = 3;
-        let obstacleSpawnRate = 60; // кадры между спавном
+        let obstacleSpawnRate = 50;
         let frameCount = 0;
         let gameLoopId = null;
         
@@ -295,8 +310,7 @@
             score = 0;
             level = 1;
             obstacleSpeed = 3;
-            updateScoreDisplay();
-            updateLevelDisplay();
+            updateDisplays();
             document.getElementById('gameOver').style.display = 'none';
         }
         
@@ -306,7 +320,7 @@
                 initGame();
                 gameRunning = true;
                 startBtn.disabled = true;
-                startBtn.textContent = 'ИГРА ИДЕТ...';
+                startBtn.textContent = '🔄 ИГРА ИДЕТ...';
                 saveBtn.disabled = true;
                 
                 gameLoopId = requestAnimationFrame(gameLoop);
@@ -319,64 +333,88 @@
             if (!gameRunning) return;
             
             // Очистка canvas
-            ctx.fillStyle = '#0f3460';
+            ctx.fillStyle = '#1a1a2e';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Движение игрока
+            // Фоновые звезды
+            drawStars();
+            
+            // Игрок
             drawPlayer();
             
-            // Спавн препятствий
+            // Препятствия
             if (frameCount % obstacleSpawnRate === 0) {
                 spawnObstacle();
             }
-            
-            // Обновление препятствий
             updateObstacles();
             
             // Проверка столкновений
-            checkCollisions();
+            if (checkCollisions()) {
+                endGame();
+                return;
+            }
             
-            // Обновление уровня
+            // Уровень
             updateLevel();
             
             frameCount++;
             gameLoopId = requestAnimationFrame(gameLoop);
         }
         
+        // Звездное небо
+        function drawStars() {
+            ctx.fillStyle = 'white';
+            for (let i = 0; i < 50; i++) {
+                const x = (frameCount + i * 50) % canvas.width;
+                const y = (i * 20) % canvas.height;
+                const size = Math.random() * 2;
+                ctx.fillRect(x, y, size, size);
+            }
+        }
+        
         // Отрисовка игрока
         function drawPlayer() {
             // Корпус корабля
             ctx.fillStyle = '#00b4d8';
-            ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.beginPath();
+            ctx.moveTo(player.x + player.width/2, player.y);
+            ctx.lineTo(player.x, player.y + player.height);
+            ctx.lineTo(player.x + player.width, player.y + player.height);
+            ctx.closePath();
+            ctx.fill();
             
             // Кабина
             ctx.fillStyle = '#90e0ef';
             ctx.beginPath();
-            ctx.arc(player.x + player.width / 2, player.y, 15, 0, Math.PI, true);
+            ctx.arc(player.x + player.width/2, player.y + 10, 8, 0, Math.PI * 2);
             ctx.fill();
             
             // Двигатели
             ctx.fillStyle = '#ff6b6b';
-            ctx.fillRect(player.x + 5, player.y + player.height, 10, 10);
-            ctx.fillRect(player.x + player.width - 15, player.y + player.height, 10, 10);
+            ctx.fillRect(player.x + 10, player.y + player.height, 8, 15);
+            ctx.fillRect(player.x + player.width - 18, player.y + player.height, 8, 15);
+            
+            // Огонь из двигателей
+            ctx.fillStyle = '#ff9e00';
+            ctx.fillRect(player.x + 8, player.y + player.height + 15, 12, 10);
+            ctx.fillRect(player.x + player.width - 20, player.y + player.height + 15, 12, 10);
         }
         
         // Создание препятствия
         function spawnObstacle() {
-            const size = 20 + Math.random() * 20;
+            const size = 20 + Math.random() * 25;
+            const colors = ['#ff6b6b', '#ffd166', '#06d6a0', '#118ab2', '#ef476f'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
             obstacles.push({
                 x: Math.random() * (canvas.width - size),
                 y: -size,
-                width: size,
-                height: size,
+                size: size,
                 speed: obstacleSpeed,
-                color: getRandomColor()
+                color: color,
+                rotation: Math.random() * Math.PI * 2,
+                rotationSpeed: (Math.random() - 0.5) * 0.1
             });
-        }
-        
-        function getRandomColor() {
-            const colors = ['#ff6b6b', '#ffd166', '#06d6a0', '#118ab2', '#ef476f'];
-            return colors[Math.floor(Math.random() * colors.length)];
         }
         
         // Обновление препятствий
@@ -384,17 +422,29 @@
             for (let i = obstacles.length - 1; i >= 0; i--) {
                 const obs = obstacles[i];
                 
+                // Вращение
+                obs.rotation += obs.rotationSpeed;
+                
                 // Отрисовка астероида
+                ctx.save();
+                ctx.translate(obs.x + obs.size/2, obs.y + obs.size/2);
+                ctx.rotate(obs.rotation);
+                
                 ctx.fillStyle = obs.color;
                 ctx.beginPath();
-                ctx.arc(obs.x + obs.width/2, obs.y + obs.height/2, obs.width/2, 0, Math.PI * 2);
+                for (let j = 0; j < 8; j++) {
+                    const angle = (Math.PI * 2 * j) / 8;
+                    const radius = obs.size/2 * (0.7 + Math.random() * 0.3);
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    
+                    if (j === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
                 ctx.fill();
                 
-                // Текстура астероида
-                ctx.fillStyle = '#333';
-                ctx.beginPath();
-                ctx.arc(obs.x + obs.width/3, obs.y + obs.height/3, obs.width/6, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.restore();
                 
                 // Движение вниз
                 obs.y += obs.speed;
@@ -403,7 +453,7 @@
                 if (obs.y > canvas.height) {
                     obstacles.splice(i, 1);
                     score += 10;
-                    updateScoreDisplay();
+                    updateDisplays();
                 }
             }
         }
@@ -411,14 +461,15 @@
         // Проверка столкновений
         function checkCollisions() {
             for (let obs of obstacles) {
-                if (player.x < obs.x + obs.width &&
-                    player.x + player.width > obs.x &&
-                    player.y < obs.y + obs.height &&
-                    player.y + player.height > obs.y) {
-                    endGame();
-                    return;
+                const dx = (player.x + player.width/2) - (obs.x + obs.size/2);
+                const dy = (player.y + player.height/2) - (obs.y + obs.size/2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < (player.width/2 + obs.size/2)) {
+                    return true;
                 }
             }
+            return false;
         }
         
         // Обновление уровня
@@ -426,8 +477,17 @@
             const newLevel = Math.floor(score / 100) + 1;
             if (newLevel > level) {
                 level = newLevel;
-                obstacleSpeed = 3 + level * 0.5;
-                updateLevelDisplay();
+                obstacleSpeed = 3 + level * 0.7;
+                obstacleSpawnRate = Math.max(20, 60 - level * 5);
+                updateDisplays();
+                
+                // Визуальный эффект нового уровня
+                ctx.fillStyle = 'rgba(255, 215, 102, 0.5)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                setTimeout(() => {
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }, 100);
             }
         }
         
@@ -438,11 +498,21 @@
             
             document.getElementById('gameOver').style.display = 'block';
             startBtn.disabled = false;
-            startBtn.textContent = 'ИГРАТЬ СНОВА';
+            startBtn.textContent = '🔄 ИГРАТЬ СНОВА';
             saveBtn.disabled = false;
             
-            // Показываем финальный счет
-            alert(`Игра окончена! Ваш счет: ${score}`);
+            // Взрыв
+            ctx.fillStyle = '#ff6b6b';
+            for (let i = 0; i < 20; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = Math.random() * 30;
+                const x = player.x + player.width/2 + Math.cos(angle) * radius;
+                const y = player.y + player.height/2 + Math.sin(angle) * radius;
+                const size = Math.random() * 10 + 5;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
         
         // Управление
@@ -458,25 +528,15 @@
             }
         }
         
-        // Управление с клавиатуры
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'ArrowLeft') moveLeft();
-            if (e.code === 'ArrowRight') moveRight();
-            if (e.code === 'Space' && !gameRunning) startGame();
-        });
-        
-        // Обновление отображения счета
-        function updateScoreDisplay() {
+        // Обновление отображения
+        function updateDisplays() {
             document.getElementById('currentScore').textContent = score;
-        }
-        
-        function updateLevelDisplay() {
             document.getElementById('level').textContent = level;
         }
         
         // Сохранение результата
         async function saveScore() {
-            const username = document.getElementById('username').value.trim() || 'Игрок';
+            const username = document.getElementById('username').value.trim() || 'Космонавт';
             
             if (score === 0) {
                 alert('Сначала сыграйте и наберите очки!');
@@ -495,16 +555,18 @@
                     })
                 });
                 
+                const data = await response.json();
+                
                 if (response.ok) {
-                    alert('Результат сохранен!');
+                    alert('✅ Результат сохранен!');
                     loadLeaderboard();
                     loadUserStats();
                 } else {
-                    alert('Ошибка при сохранении');
+                    alert('❌ Ошибка: ' + (data.error || 'Неизвестная ошибка'));
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Ошибка соединения с сервером');
+                alert('❌ Ошибка соединения с сервером');
             }
         }
         
@@ -517,55 +579,78 @@
                 const tbody = document.getElementById('leaderboardBody');
                 tbody.innerHTML = '';
                 
-                data.scores.forEach((score, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${score.username}</td>
-                        <td>${score.score}</td>
-                        <td>${score.date}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
+                if (data.scores && data.scores.length > 0) {
+                    data.scores.forEach((score, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${score.rank}</td>
+                            <td>${score.username}</td>
+                            <td>${score.score}</td>
+                            <td>${score.date}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Пока нет результатов</td></tr>';
+                }
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
+                document.getElementById('leaderboardBody').innerHTML = 
+                    '<tr><td colspan="4" style="text-align: center; color: #ff6b6b;">Ошибка загрузки</td></tr>';
             }
         }
         
         // Загрузка статистики пользователя
         async function loadUserStats() {
-            const username = document.getElementById('username').value.trim() || 'Игрок';
+            const username = document.getElementById('username').value.trim() || 'Космонавт';
             
             try {
                 const response = await fetch(`/api/user_stats?username=${encodeURIComponent(username)}`);
                 const data = await response.json();
                 
-                document.getElementById('bestScore').textContent = data.best_score;
-                document.getElementById('totalGames').textContent = data.total_games;
-                
-                const recentGames = document.getElementById('recentGames');
-                recentGames.innerHTML = '<h4>Последние игры:</h4>';
-                
-                data.games.slice(0, 5).forEach(game => {
-                    const div = document.createElement('div');
-                    div.textContent = `${game.score} очков (${game.date})`;
-                    div.style.fontSize = '12px';
-                    div.style.marginBottom = '5px';
-                    recentGames.appendChild(div);
-                });
+                if (response.ok) {
+                    document.getElementById('bestScore').textContent = data.best_score;
+                    document.getElementById('totalGames').textContent = data.total_games;
+                    
+                    const recentGamesDiv = document.getElementById('recentGames');
+                    recentGamesDiv.innerHTML = '';
+                    
+                    if (data.recent_games && data.recent_games.length > 0) {
+                        data.recent_games.forEach(game => {
+                            const div = document.createElement('div');
+                            div.textContent = `🎯 ${game.score} очков (${game.date})`;
+                            div.style.fontSize = '12px';
+                            div.style.marginBottom = '5px';
+                            div.style.padding = '5px';
+                            div.style.background = 'rgba(255, 255, 255, 0.05)';
+                            div.style.borderRadius = '3px';
+                            recentGamesDiv.appendChild(div);
+                        });
+                    } else {
+                        recentGamesDiv.innerHTML = '<div style="color: #999; font-style: italic;">Нет сыгранных игр</div>';
+                    }
+                }
             } catch (error) {
                 console.error('Error loading user stats:', error);
             }
         }
         
-        // Автозагрузка таблицы лидеров при загрузке страницы
+        // Управление с клавиатуры
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowLeft') moveLeft();
+            if (e.code === 'ArrowRight') moveRight();
+            if (e.code === 'Space' && !gameRunning) startGame();
+        });
+        
+        // Автозагрузка при старте
         document.addEventListener('DOMContentLoaded', () => {
             loadLeaderboard();
             loadUserStats();
             
-            // Автосохранение имени пользователя
-            const usernameInput = document.getElementById('username');
-            usernameInput.addEventListener('change', loadUserStats);
+            // Обновление статистики при изменении имени
+            document.getElementById('username').addEventListener('input', loadUserStats);
+            
+            console.log('🎮 Игра готова! Удачи!');
         });
     </script>
 </body>
