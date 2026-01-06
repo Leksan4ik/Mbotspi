@@ -3,244 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 Космическая Уклонялка</title>
+    <title>Уклонялка</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63);
-            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #fff;
             min-height: 100vh;
-            padding: 20px;
-            padding-bottom: 80px;
+            overflow: hidden;
         }
         
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 100%;
+            padding: 10px;
         }
         
-        header {
+        .header {
             text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            border: 2px solid #00b4d8;
+            margin-bottom: 10px;
+            padding: 8px;
         }
         
         h1 {
-            color: #00b4d8;
-            font-size: 1.8em;
-            margin-bottom: 10px;
+            color: #4dabf7;
+            font-size: 1.2em;
+            margin-bottom: 4px;
+        }
+        
+        .subtitle {
+            color: #adb5bd;
+            font-size: 0.8em;
         }
         
         .game-section {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 15px;
-            border: 2px solid #00b4d8;
-            margin-bottom: 20px;
+            margin: 0 auto 10px;
+            position: relative;
         }
         
         canvas {
-            background: #1a1a2e;
-            border-radius: 10px;
-            border: 3px solid #00b4d8;
-            display: block;
-            margin: 0 auto 15px;
-            max-width: 100%;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-        
-        button {
-            padding: 12px 20px;
-            border: none;
+            background: #141420;
             border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: linear-gradient(45deg, #00b4d8, #0077b6);
-            color: white;
-            min-width: 100px;
+            border: 1px solid #343a40;
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 180, 216, 0.4);
-        }
-        
-        button:disabled {
-            background: #666;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .stats {
+        .stats-bar {
             display: flex;
             justify-content: space-around;
-            margin: 15px 0;
-            font-size: 18px;
+            margin: 8px 0;
+            font-size: 0.9em;
         }
         
         .stat-item {
             text-align: center;
-            background: rgba(0, 180, 216, 0.2);
-            padding: 10px;
-            border-radius: 10px;
+            background: rgba(77, 171, 247, 0.1);
+            padding: 6px 10px;
+            border-radius: 6px;
             flex: 1;
-            margin: 0 5px;
+            margin: 0 4px;
+            border: 1px solid rgba(77, 171, 247, 0.2);
         }
         
-        .instructions {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border: 2px solid #ffd166;
+        .controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 10px 0;
         }
         
-        .instructions h3 {
-            color: #ffd166;
-            margin-bottom: 10px;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
             font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #495057;
+            color: white;
+            flex: 1;
+            max-width: 120px;
+        }
+        
+        .control-btn:hover {
+            background: #6c757d;
+        }
+        
+        .control-btn:disabled {
+            background: #343a40;
+            color: #868e96;
+            cursor: not-allowed;
+        }
+        
+        .control-btn.start {
+            background: #4dabf7;
+        }
+        
+        .control-btn.start:hover {
+            background: #339af0;
+        }
+        
+        .control-btn.left {
+            border-radius: 6px 2px 2px 6px;
+        }
+        
+        .control-btn.right {
+            border-radius: 2px 6px 6px 2px;
         }
         
         .game-over {
             color: #ff6b6b;
-            font-size: 24px;
+            font-size: 16px;
             text-align: center;
-            margin: 15px 0;
-            padding: 15px;
-            background: rgba(255, 107, 107, 0.1);
-            border-radius: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 107, 107, 0.05);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
             display: none;
         }
         
         .save-section {
+            background: rgba(40, 40, 50, 0.8);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: none;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .save-input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #495057;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 14px;
+        }
+        
+        .save-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #40c057;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .bottom-panel {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 15px;
-            border-top: 2px solid #06d6a0;
+            background: rgba(20, 20, 30, 0.95);
+            border-top: 1px solid #343a40;
+            padding: 12px;
             display: flex;
+            justify-content: space-around;
             gap: 10px;
-            align-items: center;
         }
         
-        input {
+        .panel-btn {
+            padding: 8px 0;
+            border: none;
+            background: transparent;
+            color: #868e96;
+            font-size: 12px;
+            cursor: pointer;
             flex: 1;
-            padding: 10px;
-            border-radius: 5px;
-            border: 2px solid #00b4d8;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 16px;
+            transition: color 0.2s;
         }
         
-        .save-btn {
-            background: linear-gradient(45deg, #06d6a0, #04a777);
+        .panel-btn:hover {
+            color: #4dabf7;
+        }
+        
+        .panel-btn i {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 4px;
         }
         
         @media (max-width: 600px) {
-            h1 { font-size: 1.5em; }
-            button { padding: 10px 15px; font-size: 14px; min-width: 80px; }
-            .stats { font-size: 16px; }
+            .container {
+                padding: 8px;
+            }
+            
+            h1 {
+                font-size: 1.1em;
+            }
+            
+            .control-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            
+            .stat-item {
+                padding: 5px 8px;
+                font-size: 0.85em;
+            }
+            
+            .bottom-panel {
+                padding: 10px;
+            }
+            
+            .panel-btn {
+                font-size: 11px;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .game-section {
+                margin-bottom: 5px;
+            }
+            
+            .stats-bar {
+                margin: 5px 0;
+            }
+            
+            .controls {
+                margin: 8px 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🚀 Космическая Уклонялка</h1>
-            <p>Телеграм-версия игры</p>
-        </header>
+        <div class="header">
+            <h1>Уклонялка</h1>
+            <div class="subtitle">Уклоняйтесь от препятствий</div>
+        </div>
         
         <div class="game-section">
-            <canvas id="gameCanvas" width="600" height="400"></canvas>
+            <canvas id="gameCanvas"></canvas>
             
-            <div class="stats">
+            <div class="stats-bar">
                 <div class="stat-item">
-                    🏆 Очки: <span id="currentScore">0</span>
+                    🏆 <span id="currentScore">0</span>
                 </div>
                 <div class="stat-item">
-                    🎯 Уровень: <span id="level">1</span>
+                    🎯 <span id="level">1</span>
                 </div>
                 <div class="stat-item">
-                    ⚡ Скорость: <span id="speed">3</span>
+                    ⚡ <span id="speed">3</span>
                 </div>
             </div>
             
             <div class="game-over" id="gameOver">
-                💥 ИГРА ОКОНЧЕНА! 💥<br>
-                Ваш счет: <span id="finalScore">0</span>
+                Игра окончена<br>
+                Счёт: <span id="finalScore">0</span>
             </div>
             
             <div class="controls">
-                <button onclick="moveLeft()">⬅️ ВЛЕВО</button>
-                <button onclick="startGame()" id="startBtn">🚀 СТАРТ</button>
-                <button onclick="moveRight()">➡️ ВПРАВО</button>
+                <button onclick="moveLeft()" class="control-btn left">←</button>
+                <button onclick="startGame()" class="control-btn start" id="startBtn">Старт</button>
+                <button onclick="moveRight()" class="control-btn right">→</button>
             </div>
         </div>
         
-        <div class="instructions">
-            <h3>📖 Как играть:</h3>
-            <ul>
-                <li>Нажмите <strong>СТАРТ</strong> чтобы начать игру</li>
-                <li>Управляйте кораблем кнопками <strong>ВЛЕВО/ВПРАВО</strong></li>
-                <li>Уклоняйтесь от падающих астероидов</li>
-                <li>За каждое уклонение: <strong>+10 очков</strong></li>
-                <li>Каждые <strong>100 очков</strong> повышают уровень</li>
-                <li>После игры введите имя и сохраните результат!</li>
-            </ul>
+        <div class="save-section" id="saveSection">
+            <input type="text" id="username" placeholder="Имя" value="Игрок" class="save-input">
+            <button onclick="saveScore()" class="save-btn">Сохранить</button>
         </div>
     </div>
     
-    <div class="save-section" id="saveSection" style="display: none;">
-        <input type="text" id="username" placeholder="Введите ваш никнейм" value="Игрок">
-        <button onclick="saveScore()" class="save-btn">💾 СОХРАНИТЬ</button>
-        <button onclick="shareScore()" style="background: linear-gradient(45deg, #7209b7, #560bad);">📤 ПОДЕЛИТЬСЯ</button>
+    <!-- Панель для будущих кнопок -->
+    <div class="bottom-panel">
+        <button class="panel-btn">
+            <div>🎮</div>
+            Игра
+        </button>
+        <button class="panel-btn">
+            <div>📊</div>
+            Статы
+        </button>
+        <button class="panel-btn">
+            <div>🏆</div>
+            Топ
+        </button>
+        <button class="panel-btn">
+            <div>⚙️</div>
+            Настройки
+        </button>
     </div>
 
     <script>
         // Инициализация Telegram WebApp
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Раскрываем на весь экран
-        tg.MainButton.hide();
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.MainButton.hide();
+        }
         
         // Игровые переменные
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startBtn = document.getElementById('startBtn');
         
+        // Размеры canvas
+        canvas.width = Math.min(window.innerWidth - 20, 500);
+        canvas.height = canvas.width * 0.65;
+        
         let gameRunning = false;
         let score = 0;
         let level = 1;
         let player = {
-            x: canvas.width / 2 - 25,
-            y: canvas.height - 60,
-            width: 50,
-            height: 40,
-            speed: 8
+            x: canvas.width / 2 - 20,
+            y: canvas.height - 50,
+            width: 40,
+            height: 30,
+            speed: 6
         };
         
         let obstacles = [];
@@ -251,7 +333,7 @@
         
         // Инициализация игры
         function initGame() {
-            player.x = canvas.width / 2 - 25;
+            player.x = canvas.width / 2 - 20;
             obstacles = [];
             frameCount = 0;
             score = 0;
@@ -268,7 +350,7 @@
                 initGame();
                 gameRunning = true;
                 startBtn.disabled = true;
-                startBtn.textContent = '⚡ ИГРА...';
+                startBtn.textContent = 'Игра...';
                 
                 gameLoopId = requestAnimationFrame(gameLoop);
             }
@@ -278,11 +360,11 @@
         function gameLoop() {
             if (!gameRunning) return;
             
-            // Очистка canvas
-            ctx.fillStyle = '#1a1a2e';
+            // Очистка
+            ctx.fillStyle = '#141420';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Фоновые звезды
+            // Звезды
             drawStars();
             
             // Игрок
@@ -307,21 +389,20 @@
             gameLoopId = requestAnimationFrame(gameLoop);
         }
         
-        // Звездное небо
+        // Звезды
         function drawStars() {
-            ctx.fillStyle = 'white';
-            for (let i = 0; i < 30; i++) {
-                const x = (frameCount + i * 50) % canvas.width;
-                const y = (i * 30) % canvas.height;
-                const size = Math.random() * 2;
-                ctx.fillRect(x, y, size, size);
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            for (let i = 0; i < 20; i++) {
+                const x = (frameCount + i * 30) % canvas.width;
+                const y = (i * 25) % canvas.height;
+                ctx.fillRect(x, y, 1, 1);
             }
         }
         
         // Отрисовка игрока
         function drawPlayer() {
-            // Корпус корабля
-            ctx.fillStyle = '#00b4d8';
+            // Корпус
+            ctx.fillStyle = '#4dabf7';
             ctx.beginPath();
             ctx.moveTo(player.x + player.width/2, player.y);
             ctx.lineTo(player.x, player.y + player.height);
@@ -329,22 +410,17 @@
             ctx.closePath();
             ctx.fill();
             
-            // Кабина
-            ctx.fillStyle = '#90e0ef';
+            // Свет
+            ctx.fillStyle = '#a5d8ff';
             ctx.beginPath();
-            ctx.arc(player.x + player.width/2, player.y + 10, 8, 0, Math.PI * 2);
+            ctx.arc(player.x + player.width/2, player.y + 8, 6, 0, Math.PI * 2);
             ctx.fill();
-            
-            // Двигатели
-            ctx.fillStyle = '#ff6b6b';
-            ctx.fillRect(player.x + 10, player.y + player.height, 8, 15);
-            ctx.fillRect(player.x + player.width - 18, player.y + player.height, 8, 15);
         }
         
         // Создание препятствия
         function spawnObstacle() {
-            const size = 20 + Math.random() * 25;
-            const colors = ['#ff6b6b', '#ffd166', '#06d6a0', '#118ab2'];
+            const size = 15 + Math.random() * 20;
+            const colors = ['#ff6b6b', '#ff922b', '#40c057', '#339af0'];
             const color = colors[Math.floor(Math.random() * colors.length)];
             
             obstacles.push({
@@ -361,22 +437,16 @@
             for (let i = obstacles.length - 1; i >= 0; i--) {
                 const obs = obstacles[i];
                 
-                // Отрисовка астероида
+                // Отрисовка
                 ctx.fillStyle = obs.color;
                 ctx.beginPath();
                 ctx.arc(obs.x + obs.size/2, obs.y + obs.size/2, obs.size/2, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Текстура
-                ctx.fillStyle = '#333';
-                ctx.beginPath();
-                ctx.arc(obs.x + obs.size/3, obs.y + obs.size/3, obs.size/6, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Движение вниз
+                // Движение
                 obs.y += obs.speed;
                 
-                // Удаление вышедших за пределы
+                // Удаление
                 if (obs.y > canvas.height) {
                     obstacles.splice(i, 1);
                     score += 10;
@@ -404,17 +474,9 @@
             const newLevel = Math.floor(score / 100) + 1;
             if (newLevel > level) {
                 level = newLevel;
-                obstacleSpeed = 3 + level * 0.7;
-                obstacleSpawnRate = Math.max(20, 60 - level * 5);
+                obstacleSpeed = 3 + level * 0.5;
+                obstacleSpawnRate = Math.max(25, 50 - level * 3);
                 updateDisplays();
-                
-                // Эффект нового уровня
-                canvas.style.borderColor = '#ffd166';
-                canvas.style.boxShadow = '0 0 20px #ffd166';
-                setTimeout(() => {
-                    canvas.style.borderColor = '#00b4d8';
-                    canvas.style.boxShadow = '0 0 10px #00b4d8';
-                }, 300);
             }
         }
         
@@ -428,20 +490,7 @@
             document.getElementById('saveSection').style.display = 'flex';
             
             startBtn.disabled = false;
-            startBtn.textContent = '🔄 ИГРАТЬ СНОВА';
-            
-            // Взрыв
-            ctx.fillStyle = '#ff6b6b';
-            for (let i = 0; i < 15; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const radius = Math.random() * 25;
-                const x = player.x + player.width/2 + Math.cos(angle) * radius;
-                const y = player.y + player.height/2 + Math.sin(angle) * radius;
-                const size = Math.random() * 8 + 4;
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            startBtn.textContent = 'Снова';
         }
         
         // Управление
@@ -465,16 +514,11 @@
         }
         
         // Сохранение результата
-        async function saveScore() {
+        function saveScore() {
             const username = document.getElementById('username').value.trim() || 'Игрок';
             
-            if (score === 0) {
-                alert('Сначала сыграйте и наберите очки!');
-                return;
-            }
-            
-            try {
-                // Отправляем данные в Telegram бота
+            if (tg) {
+                // Отправка в Telegram бота
                 tg.sendData(JSON.stringify({
                     action: 'save_score',
                     username: username,
@@ -482,56 +526,37 @@
                     level: level
                 }));
                 
-                alert('✅ Результат сохранен в боте!');
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('✅ Игра завершена! Результат: ' + score + ' очков');
-            }
-        }
-        
-        // Поделиться результатом
-        function shareScore() {
-            const username = document.getElementById('username').value.trim() || 'Игрок';
-            const shareText = `🎮 Я только что набрал ${score} очков в Космической Уклонялке! 🚀\n\nСможешь побить мой рекорд?`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Мой результат в Космической Уклонялке',
-                    text: shareText,
-                    url: window.location.href
-                });
+                alert('Результат сохранен');
             } else {
-                alert(shareText + '\n\nСкопируйте этот текст, чтобы поделиться!');
+                alert(`Счёт: ${score}\nИмя: ${username}\n(В Telegram будет сохранено)`);
             }
+            
+            document.getElementById('saveSection').style.display = 'none';
         }
         
-        // Управление с клавиатуры
+        // Управление клавиатурой
         document.addEventListener('keydown', (e) => {
             if (e.code === 'ArrowLeft') moveLeft();
             if (e.code === 'ArrowRight') moveRight();
             if (e.code === 'Space' && !gameRunning) startGame();
         });
         
-        // Адаптация размера canvas
+        // Адаптация размера
         function resizeCanvas() {
-            const container = canvas.parentElement;
-            const maxWidth = container.clientWidth - 30;
-            const aspectRatio = 600 / 400;
+            const container = document.querySelector('.game-section');
+            const maxWidth = Math.min(window.innerWidth - 20, 500);
+            const aspectRatio = 1.54;
             
             canvas.width = maxWidth;
             canvas.height = maxWidth / aspectRatio;
             
-            // Обновляем позицию игрока
-            player.x = canvas.width / 2 - 25;
-            player.y = canvas.height - 60;
+            player.x = canvas.width / 2 - 20;
+            player.y = canvas.height - 50;
         }
         
         // Инициализация
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-        
-        console.log('🎮 Игра загружена! Удачи!');
     </script>
 </body>
 </html>
