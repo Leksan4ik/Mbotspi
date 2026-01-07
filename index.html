@@ -1,75 +1,227 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Tarot</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-body {
-    background: url("background.png") center/cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-#cards {
-    display: flex;
-    gap: 15px;
-}
-.card {
-    width: 120px;
-    height: 200px;
-    background: url("taro/back.png") center/cover;
-    cursor: pointer;
-}
-.selected {
-    border: 3px solid gold;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tarot Reader</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: url('background.png') no-repeat center center fixed; 
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Georgia', serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-shadow: 2px 2px 4px #000000;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            perspective: 1000px;
+            flex-wrap: wrap;
+            max-width: 100%;
+        }
+
+        .card-slot {
+            width: 60px; /* Ширина карты */
+            height: 100px; /* Высота карты */
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        /* Адаптация для больших экранов */
+        @media (min-width: 400px) {
+            .card-slot { width: 70px; height: 120px; }
+        }
+
+        .card-slot.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-slot.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-front {
+            background-image: url('https://i.pinimg.com/736x/8a/a5/d2/8aa5d237197f48512534571c4c2a4128.jpg'); /* Ссылка на рубашку карты, замени на локальный файл если нужно */
+            border: 2px solid #d4af37;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #222;
+            border: 2px solid #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+            text-shadow: 1px 1px 2px black;
+        }
+    </style>
 </head>
 <body>
 
-<div id="cards"></div>
+    <h1 id="title">Выберите 3 карты</h1>
+    
+    <div class="cards-container" id="container">
+        </div>
 
-<script>
-const tg = window.Telegram.WebApp;
-tg.expand();
+    <div id="status"></div>
 
-const tarot = [
-    "lovers.png",
-    "justice.png",
-    "temperance.png",
-    "death.png",
-    "tower.png"
-];
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Раскрыть на весь экран
 
-let selected = [];
+        // СПИСОК КАРТ: Здесь должны быть имена файлов из папки taro/ и их названия
+        // Для примера я использую заглушки. Заполни реальными названиями.
+        const tarotDeck = [
+            { file: 'taro/0.jpg', name: 'Шут' },
+            { file: 'taro/1.jpg', name: 'Маг' },
+            { file: 'taro/2.jpg', name: 'Жрица' },
+            { file: 'taro/3.jpg', name: 'Императрица' },
+            { file: 'taro/4.jpg', name: 'Император' },
+            { file: 'taro/5.jpg', name: 'Жрец' },
+            { file: 'taro/6.jpg', name: 'Влюбленные' },
+            { file: 'taro/7.jpg', name: 'Колесница' },
+            { file: 'taro/8.jpg', name: 'Сила' },
+            { file: 'taro/9.jpg', name: 'Отшельник' },
+            { file: 'taro/10.jpg', name: 'Колесо Фортуны' },
+            { file: 'taro/11.jpg', name: 'Справедливость' },
+            { file: 'taro/12.jpg', name: 'Повешенный' },
+            { file: 'taro/13.jpg', name: 'Смерть' },
+            { file: 'taro/14.jpg', name: 'Умеренность' },
+            { file: 'taro/15.jpg', name: 'Дьявол' },
+            { file: 'taro/16.jpg', name: 'Башня' },
+            { file: 'taro/17.jpg', name: 'Звезда' },
+            { file: 'taro/18.jpg', name: 'Луна' },
+            { file: 'taro/19.jpg', name: 'Солнце' },
+            { file: 'taro/20.jpg', name: 'Суд' },
+            { file: 'taro/21.jpg', name: 'Мир' }
+             // Добавь младшие арканы по аналогии...
+        ];
 
-const container = document.getElementById("cards");
+        let selectedCards = [];
+        const maxSelection = 3;
+        const totalCardsOnScreen = 5; // Как в ТЗ (5 карт рубашками вверх)
 
-tarot.forEach(card => {
-    const div = document.createElement("div");
-    div.className = "card";
+        const container = document.getElementById('container');
 
-    div.onclick = () => {
-        if (selected.length >= 3 || selected.includes(card)) return;
-
-        div.style.background = `url("taro/${card}") center/cover`;
-        div.classList.add("selected");
-        selected.push(card.replace(".png", ""));
-
-        if (selected.length === 3) {
-            tg.sendData(JSON.stringify({
-                cards: selected,
-                question: "Общий прогноз"
-            }));
-            tg.close();
+        // Функция перемешивания массива (Фишер-Йетс)
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+            }
+            return array;
         }
-    };
 
-    container.appendChild(div);
-});
-</script>
+        // Инициализация
+        function init() {
+            // Перемешиваем колоду, чтобы результаты были всегда разные
+            const shuffledDeck = shuffle([...tarotDeck]); 
 
+            for (let i = 0; i < totalCardsOnScreen; i++) {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card-slot';
+                
+                // Присваиваем каждой карте на столе реальную карту таро из перемешанной колоды
+                const cardData = shuffledDeck[i];
+                cardEl.dataset.name = cardData.name;
+                cardEl.dataset.img = cardData.file;
+
+                cardEl.innerHTML = `
+                    <div class="card-face card-front"></div>
+                    <div class="card-face card-back">
+                        <img src="${cardData.file}" alt="${cardData.name}">
+                    </div>
+                `;
+
+                cardEl.addEventListener('click', () => onCardClick(cardEl));
+                container.appendChild(cardEl);
+            }
+        }
+
+        function onCardClick(card) {
+            if (selectedCards.length >= maxSelection || card.classList.contains('flipped')) {
+                return;
+            }
+
+            // Переворот
+            card.classList.add('flipped');
+            selectedCards.push(card.dataset.name);
+
+            // Вибрация (Haptic Feedback)
+            tg.HapticFeedback.impactOccurred('light');
+
+            if (selectedCards.length === maxSelection) {
+                finishSelection();
+            }
+        }
+
+        function finishSelection() {
+            document.getElementById('title').innerText = "Судьба определена...";
+            
+            // Убираем невыбранные карты
+            const allCards = document.querySelectorAll('.card-slot');
+            allCards.forEach(c => {
+                if (!c.classList.contains('flipped')) {
+                    c.classList.add('hidden');
+                }
+            });
+
+            // Отправляем данные боту через 1.5 секунды, чтобы пользователь успел увидеть карты
+            setTimeout(() => {
+                // Формируем строку "Карта 1, Карта 2, Карта 3"
+                const dataToSend = selectedCards.join(", ");
+                tg.sendData(dataToSend); 
+            }, 2000);
+        }
+
+        init();
+    </script>
 </body>
 </html>
