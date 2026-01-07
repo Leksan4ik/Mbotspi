@@ -205,11 +205,267 @@ canvas{
 </div>
 
 <!-- ===== ТВОЙ JS БЕЗ ИЗМЕНЕНИЙ ===== -->
-<script>
-/* JS полностью идентичен твоему —
-   можно вставить ВЕСЬ твой скрипт
-   начиная с инициализации TG */
-</script>
+    <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.MainButton.hide();
+        }
+        
+        // Игровые переменные
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        
+        // Размеры canvas
+        canvas.width = Math.min(window.innerWidth - 20, 500);
+        canvas.height = canvas.width * 0.65;
+        
+        let gameRunning = false;
+        let score = 0;
+        let level = 1;
+        let player = {
+            x: canvas.width / 2 - 20,
+            y: canvas.height - 50,
+            width: 40,
+            height: 30,
+            speed: 6
+        };
+        
+        let obstacles = [];
+        let obstacleSpeed = 3;
+        let obstacleSpawnRate = 50;
+        let frameCount = 0;
+        let gameLoopId = null;
+        
+        // Инициализация игры
+        function initGame() {
+            player.x = canvas.width / 2 - 20;
+            obstacles = [];
+            frameCount = 0;
+            score = 0;
+            level = 1;
+            obstacleSpeed = 3;
+            updateDisplays();
+            document.getElementById('gameOver').style.display = 'none';
+            document.getElementById('saveSection').style.display = 'none';
+        }
+        
+        // Старт игры
+        function startGame() {
+            if (!gameRunning) {
+                initGame();
+                gameRunning = true;
+                startBtn.disabled = true;
+                startBtn.textContent = 'Игра...';
+                
+                gameLoopId = requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        // Игровой цикл
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // Очистка
+            ctx.fillStyle = '#141420';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Звезды
+            drawStars();
+            
+            // Игрок
+            drawPlayer();
+            
+            // Препятствия
+            if (frameCount % obstacleSpawnRate === 0) {
+                spawnObstacle();
+            }
+            updateObstacles();
+            
+            // Проверка столкновений
+            if (checkCollisions()) {
+                endGame();
+                return;
+            }
+            
+            // Уровень
+            updateLevel();
+            
+            frameCount++;
+            gameLoopId = requestAnimationFrame(gameLoop);
+        }
+        
+        // Звезды
+        function drawStars() {
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            for (let i = 0; i < 20; i++) {
+                const x = (frameCount + i * 30) % canvas.width;
+                const y = (i * 25) % canvas.height;
+                ctx.fillRect(x, y, 1, 1);
+            }
+        }
+        
+        // Отрисовка игрока
+        function drawPlayer() {
+            // Корпус
+            ctx.fillStyle = '#4dabf7';
+            ctx.beginPath();
+            ctx.moveTo(player.x + player.width/2, player.y);
+            ctx.lineTo(player.x, player.y + player.height);
+            ctx.lineTo(player.x + player.width, player.y + player.height);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Свет
+            ctx.fillStyle = '#a5d8ff';
+            ctx.beginPath();
+            ctx.arc(player.x + player.width/2, player.y + 8, 6, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Создание препятствия
+        function spawnObstacle() {
+            const size = 15 + Math.random() * 20;
+            const colors = ['#ff6b6b', '#ff922b', '#40c057', '#339af0'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            obstacles.push({
+                x: Math.random() * (canvas.width - size),
+                y: -size,
+                size: size,
+                speed: obstacleSpeed,
+                color: color
+            });
+        }
+        
+        // Обновление препятствий
+        function updateObstacles() {
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obs = obstacles[i];
+                
+                // Отрисовка
+                ctx.fillStyle = obs.color;
+                ctx.beginPath();
+                ctx.arc(obs.x + obs.size/2, obs.y + obs.size/2, obs.size/2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Движение
+                obs.y += obs.speed;
+                
+                // Удаление
+                if (obs.y > canvas.height) {
+                    obstacles.splice(i, 1);
+                    score += 10;
+                    updateDisplays();
+                }
+            }
+        }
+        
+        // Проверка столкновений
+        function checkCollisions() {
+            for (let obs of obstacles) {
+                const dx = (player.x + player.width/2) - (obs.x + obs.size/2);
+                const dy = (player.y + player.height/2) - (obs.y + obs.size/2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < (player.width/2 + obs.size/2)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        // Обновление уровня
+        function updateLevel() {
+            const newLevel = Math.floor(score / 100) + 1;
+            if (newLevel > level) {
+                level = newLevel;
+                obstacleSpeed = 3 + level * 0.5;
+                obstacleSpawnRate = Math.max(25, 50 - level * 3);
+                updateDisplays();
+            }
+        }
+        
+        // Конец игры
+        function endGame() {
+            gameRunning = false;
+            cancelAnimationFrame(gameLoopId);
+            
+            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('saveSection').style.display = 'flex';
+            
+            startBtn.disabled = false;
+            startBtn.textContent = 'Снова';
+        }
+        
+        // Управление
+        function moveLeft() {
+            if (gameRunning && player.x > 0) {
+                player.x -= player.speed;
+            }
+        }
+        
+        function moveRight() {
+            if (gameRunning && player.x < canvas.width - player.width) {
+                player.x += player.speed;
+            }
+        }
+        
+        // Обновление отображения
+        function updateDisplays() {
+            document.getElementById('currentScore').textContent = score;
+            document.getElementById('level').textContent = level;
+            document.getElementById('speed').textContent = obstacleSpeed.toFixed(1);
+        }
+        
+        // Сохранение результата
+        function saveScore() {
+            const username = document.getElementById('username').value.trim() || 'Игрок';
+            
+            if (tg) {
+                // Отправка в Telegram бота
+                tg.sendData(JSON.stringify({
+                    action: 'save_score',
+                    username: username,
+                    score: score,
+                    level: level
+                }));
+                
+                alert('Результат сохранен');
+            } else {
+                alert(`Счёт: ${score}\nИмя: ${username}\n(В Telegram будет сохранено)`);
+            }
+            
+            document.getElementById('saveSection').style.display = 'none';
+        }
+        
+        // Управление клавиатурой
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowLeft') moveLeft();
+            if (e.code === 'ArrowRight') moveRight();
+            if (e.code === 'Space' && !gameRunning) startGame();
+        });
+        
+        // Адаптация размера
+        function resizeCanvas() {
+            const container = document.querySelector('.game-section');
+            const maxWidth = Math.min(window.innerWidth - 20, 500);
+            const aspectRatio = 1.54;
+            
+            canvas.width = maxWidth;
+            canvas.height = maxWidth / aspectRatio;
+            
+            player.x = canvas.width / 2 - 20;
+            player.y = canvas.height - 50;
+        }
+        
+        // Инициализация
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+    </script>
 
 </body>
 </html>
